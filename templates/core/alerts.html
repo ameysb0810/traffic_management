@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Alerts{% endblock %}
+{% block page_title %}Alerts{% endblock %}
+{% block content %}
+<div class="row g-3">
+    {% for alert in alerts %}
+        <div class="col-md-6">
+            <div class="card border-start border-5 alert-{{ alert.alert_type|lower }} bg-dark bg-opacity-60 shadow-sm" data-expires="{{ alert.expires_at|date:'c' }}">
+                <div class="card-body">
+                    <h5>{{ alert.title }}</h5>
+                    <p>{{ alert.message }}</p>
+                    {% if alert.intersection %}
+                        <p class="mb-1"><strong>Intersection:</strong> <a class="text-info" href="{% url 'intersection_detail' alert.intersection.pk %}">{{ alert.intersection.name }}</a></p>
+                    {% endif %}
+                    <p class="mb-0 text-muted">Created {{ alert.created_at|date:'M d, H:i' }}{% if alert.expires_at %}, Expires {{ alert.expires_at|date:'M d, H:i' }}{% endif %}</p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="card bg-secondary bg-opacity-10 shadow-sm p-4">
+                <p>No active alerts at the moment.</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-expires]').forEach(card => {
+            const expires = card.dataset.expires;
+            if (!expires) return;
+            const expDate = new Date(expires);
+            if (expDate <= new Date()) {
+                card.remove();
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags static %}
+{% block title %}Signal Control{% endblock %}
+{% block page_title %}Signal Control{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card bg-dark border-0 shadow-sm p-4">
+            <h4>Signal Control</h4>
+            <p class="mb-1">Intersection: {{ object.intersection.name }}</p>
+            <p class="mb-3">Direction: {{ object.direction }}</p>
+            <div class="d-flex gap-3 align-items-center mb-4">
+                <div class="signal-indicator {{ object.current_phase|lower }}"></div>
+                <div>
+                    <strong>{{ object.current_phase }}</strong>
+                    <p class="text-muted mb-0">Current operational state</p>
+                </div>
+            </div>
+            <div class="mb-4">
+                <div class="mb-2"><strong>Signal timing</strong></div>
+                <div class="mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted">Red</span>
+                        <div class="bg-secondary rounded flex-grow-1" style="height: 12px;"><div class="bg-danger rounded" style="width: {{ object.red_duration }}px; height: 12px;"></div></div>
+                        <span class="text-muted">{{ object.red_duration }}s</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted">Yellow</span>
+                        <div class="bg-secondary rounded flex-grow-1" style="height: 12px;"><div class="bg-warning rounded" style="width: {{ object.yellow_duration }}px; height: 12px;"></div></div>
+                        <span class="text-muted">{{ object.yellow_duration }}s</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted">Green</span>
+                        <div class="bg-secondary rounded flex-grow-1" style="height: 12px;"><div class="bg-success rounded" style="width: {{ object.green_duration }}px; height: 12px;"></div></div>
+                        <span class="text-muted">{{ object.green_duration }}s</span>
+                    </div>
+                </div>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{% url 'intersection_detail' object.intersection.pk %}" class="btn btn-outline-light">Back to Intersection</a>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

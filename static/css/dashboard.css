@@ -1,0 +1,190 @@
+:root {
+    --bg-base: #f8fbff;
+    --sidebar-width: 250px;
+    --card-border-radius: 14px;
+    --transition: 0.3s ease;
+}
+body {
+    background: linear-gradient(180deg, #ffffff 0%, #e8f0ff 100%);
+    color: #1f2937;
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.98);
+    border-right: 1px solid rgba(148, 163, 184, 0.2);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+}
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding-top: 70px;
+    transition: margin-left var(--transition);
+    min-height: 100vh;
+}
+@media (max-width: 768px) {
+    .sidebar {
+        position: static;
+        height: auto;
+        width: 100%;
+    }
+    .main-content {
+        margin-left: 0;
+    }
+}
+.nav-link {
+    color: #1f2937;
+    transition: all var(--transition);
+}
+.nav-link:hover {
+    color: #1d4ed8;
+    border-left: 3px solid #1d4ed8;
+}
+.card {
+    border-radius: var(--card-border-radius);
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    color: #1f2937;
+}
+.card.bg-dark,
+.card.bg-dark.bg-opacity-50,
+.card.bg-secondary {
+    background: #f8fafc !important;
+    border-color: rgba(148, 163, 184, 0.16) !important;
+    color: #1f2937 !important;
+}
+.signal-indicator,
+.phase-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+.phase-red {
+    background: #ef4444;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+.phase-green {
+    background: #22c55e;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.2);
+}
+.phase-yellow {
+    background: #fbbf24;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.2);
+    animation: pulse 1.5s infinite;
+}
+.badge-LOW {
+    background-color: #22c55e;
+}
+.badge-MODERATE {
+    background-color: #fbbf24;
+    color: #1f2937;
+}
+.badge-HIGH {
+    background-color: #fb923c;
+}
+.bg-orange {
+    background-color: #fb923c !important;
+}
+.badge-CRITICAL {
+    background-color: #ef4444;
+}
+.table-hover tbody tr:hover {
+    background-color: rgba(148, 163, 184, 0.12);
+}
+.toast {
+    border-radius: 0.75rem;
+    background: #ffffff;
+    color: #1f2937;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+.btn-outline-light,
+.text-light,
+.navbar, .navbar-dark,
+.bg-black,
+.bg-dark,
+.alert-dark,
+.btn-primary {
+    color: #1f2937 !important;
+}
+.btn-outline-light {
+    border-color: rgba(148, 163, 184, 0.4) !important;
+    background: #ffffff !important;
+}
+.btn-outline-light:hover {
+    background: #e2e8f0 !important;
+}
+.btn-primary {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+}
+.alert-info {
+    background-color: #dbeafe !important;
+    color: #1d4ed8 !important;
+}
+.alert-success {
+    background-color: #d1fae5 !important;
+    color: #166534 !important;
+}
+.alert-warning {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+}
+.alert-danger {
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.auth-page {
+    background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+    color: #0f172a;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 520px;
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 1rem;
+}
+
+.auth-input {
+    background: #f8fafc;
+    color: #0f172a;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.auth-input:focus,
+.auth-input:hover {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.12);
+}
+
+.auth-card .form-label {
+    color: #334155;
+}
+
+.auth-card h3 {
+    color: #1e3a8a;
+}
+
+.auth-card .btn-outline-primary {
+    border-color: rgba(37, 99, 235, 0.4);
+    color: #1d4ed8;
+    background: #eff6ff;
+}
+
+.auth-card .btn-outline-primary:hover {
+    background: #dbeafe;
+    color: #1e40af;
+}

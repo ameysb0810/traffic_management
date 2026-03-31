@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Incidents{% endblock %}
+{% block page_title %}Incidents{% endblock %}
+{% block content %}
+<div class="card bg-dark border-0 shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Report a New Incident</h5>
+        <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#incidentForm">Toggle form</button>
+    </div>
+    <div class="collapse show" id="incidentForm">
+        <div class="card card-body bg-secondary bg-opacity-10 mb-4">
+            <form method="post">{% csrf_token %}
+                {{ form|crispy }}
+            </form>
+        </div>
+    </div>
+    <div class="mb-3">
+        <button class="btn btn-outline-light btn-sm me-2 incident-filter" data-filter="all">All</button>
+        <button class="btn btn-outline-light btn-sm me-2 incident-filter" data-filter="unresolved">Unresolved</button>
+        <button class="btn btn-outline-light btn-sm incident-filter" data-filter="critical">Critical</button>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle mb-0" id="incidentTable">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Intersection</th>
+                    <th>Severity</th>
+                    <th>Description</th>
+                    <th>Reported At</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for incident in incidents %}
+                    <tr data-severity="{{ incident.severity }}" data-resolved="{{ incident.is_resolved }}">
+                        <td>{{ incident.incident_type }}</td>
+                        <td>{{ incident.intersection.name }}</td>
+                        <td><span class="badge bg-danger">{{ incident.severity }}</span></td>
+                        <td>{{ incident.description|truncatechars:60 }}</td>
+                        <td>{{ incident.reported_at|date:'M d, H:i' }}</td>
+                        <td>{% if incident.is_resolved %}<span class="badge bg-success">Resolved</span>{% else %}<span class="badge bg-warning text-dark">Open</span>{% endif %}</td>
+                        <td>
+                            {% if not incident.is_resolved %}
+                                <form method="post" action="{% url 'resolve_incident' incident.pk %}">{% csrf_token %}
+                                    <button class="btn btn-sm btn-outline-success">Resolve</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-center">No incidents to display.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.incident-filter').forEach(button => {
+        button.addEventListener('click', () => {
+            const mode = button.dataset.filter;
+            document.querySelectorAll('#incidentTable tbody tr').forEach(row => {
+                const severity = row.dataset.severity;
+                const resolved = row.dataset.resolved === 'True';
+                let show = true;
+                if (mode === 'unresolved' && resolved) show = false;
+                if (mode === 'critical' && severity !== 'CRITICAL') show = false;
+                row.style.display = show ? '' : 'none';
+            });
+        });
+    });
+</script>
+{% endblock %}

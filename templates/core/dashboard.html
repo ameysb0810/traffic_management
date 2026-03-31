@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="row g-3">
+    <div class="col-md-3">
+        <div class="card bg-dark border-0 shadow-sm">
+            <div class="card-body">
+                <p class="text-muted small mb-1">Total Intersections</p>
+                <h2>{{ total_intersections }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success bg-opacity-10 border-0 shadow-sm">
+            <div class="card-body">
+                <p class="text-muted small mb-1">Active Signals</p>
+                <h2>{{ active_signals }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning bg-opacity-10 border-0 shadow-sm">
+            <div class="card-body">
+                <p class="text-muted small mb-1">Active Alerts</p>
+                <h2>{{ active_alerts|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger bg-opacity-10 border-0 shadow-sm">
+            <div class="card-body">
+                <p class="text-muted small mb-1">Critical Incidents</p>
+                <h2>{{ critical_incidents }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card bg-dark border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="mb-3">Congestion Overview</h5>
+                <div class="progress" style="height: 32px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ congestion_summary.LOW|default:0 }}%">Low</div>
+                    <div class="progress-bar bg-warning text-dark" role="progressbar" style="width: {{ congestion_summary.MODERATE|default:0 }}%">Moderate</div>
+                    <div class="progress-bar bg-orange" role="progressbar" style="width: {{ congestion_summary.HIGH|default:0 }}%">High</div>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ congestion_summary.CRITICAL|default:0 }}%">Critical</div>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-dark border-0 shadow-sm mt-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Recent Traffic Activity</h5>
+                    <small class="text-muted">Last 10 records</small>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Intersection</th>
+                                <th>Direction</th>
+                                <th>Vehicle</th>
+                                <th>Count</th>
+                                <th>Speed</th>
+                                <th>Congestion</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for count in recent_counts %}
+                                <tr>
+                                    <td>{{ count.intersection.name }}</td>
+                                    <td>{{ count.signal.direction }}</td>
+                                    <td>{{ count.vehicle_type }}</td>
+                                    <td>{{ count.count }}</td>
+                                    <td>{{ count.average_speed }} km/h</td>
+                                    <td>
+                                        <span class="badge congestion-badge badge-{{ count.congestion_level }}">{{ count.congestion_level }}</span>
+                                    </td>
+                                    <td>{{ count.timestamp|date:'H:i, M d' }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="7" class="text-center">No recent traffic data available.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card bg-dark border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="mb-3">Active Alerts</h5>
+                {% for alert in active_alerts %}
+                    <div class="alert alert-{{ alert.alert_type|lower }} d-flex align-items-start" role="alert">
+                        <div>
+                            <h6 class="alert-heading mb-1">{{ alert.title }}</h6>
+                            <p class="mb-1">{{ alert.message }}</p>
+                            <small>{{ alert.created_at|date:'M d, H:i' }}</small>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No active alerts.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card bg-dark border-0 shadow-sm mt-4">
+            <div class="card-body">
+                <h5 class="mb-3">Quick Actions</h5>
+                <a href="{% url 'incident_create' %}" class="btn btn-outline-light w-100 mb-2">Add Incident</a>
+                <a href="{% url 'analytics' %}" class="btn btn-outline-light w-100 mb-2">View Analytics</a>
+                <button type="button" class="btn btn-info w-100" onclick="refreshSimulation()">Run Simulation</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
